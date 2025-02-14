@@ -6,7 +6,7 @@ import numpy as np
 import json
 from transformers import pipeline
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}}) 
+CORS(app, resources={r"/*": {"origins": "https://dota2-draft-prediction-backend-hupjmsheq.vercel.app"}}) 
 # Load model and label encoder
 model = joblib.load("xgboost_dota_draft_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
