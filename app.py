@@ -5,10 +5,13 @@ import pandas as pd
 import numpy as np
 import json
 from transformers import pipeline
+import onnxruntime as rt
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "https://dota2-draft-prediction.vercel.app"}}) 
 # Load model and label encoder
-model = joblib.load("xgboost_dota_draft_model.pkl")
+session = rt.InferenceSession("xgboost_model.onnx")
+
+# Load label encoder
 label_encoder = joblib.load("label_encoder.pkl")
 
 
@@ -99,8 +102,11 @@ def predict():
                 draft_state[hero] = -1
 
         draft_array = np.array([list(draft_state.values())])
-        hero_probs = model.predict_proba(draft_array)[0]
-        sorted_heroes = np.argsort(hero_probs)[::-1]  # sort heroes by probability
+        input_name = session.get_inputs()[0].name
+        output = session.run(None, {input_name: draft_array})[0]
+
+        # Get top recommendations
+        sorted_heroes = np.argsort(output[0])[::-1]  # sort heroes by probability
         
         recommended_heroes = []
         explanations = []
