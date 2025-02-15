@@ -6,7 +6,7 @@ import numpy as np
 import json
 from transformers import pipeline
 app = Flask(__name__)
-CORS(app) 
+CORS(app, resources={r"/*": {"origins": "https://stdem.github.io/Dota2_draft_prediction"}}) 
 # Load model and label encoder
 model = joblib.load("xgboost_dota_draft_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
